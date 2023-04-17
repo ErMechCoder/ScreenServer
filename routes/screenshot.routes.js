@@ -57,9 +57,9 @@ screenShotRoute.post('/:userId/projects/screenshot', async(req, res) => {
       },
       
       ],{ unique: true }).then(function(){
-          console.log("Data inserted") // Success
+          //console.log("Data inserted") // Success
       }).catch(function(error){
-          console.log(error)	 // Failure
+         //console.log(error)	 // Failure
       });
     }
   
@@ -70,9 +70,11 @@ screenShotRoute.post('/:userId/projects/screenshot', async(req, res) => {
   
   
   }else if(start==false) {
-    console.log("Please Start Your ScreenShot Again")
+      return;
+    //console.log("Please Start Your ScreenShot Again")
   }else{
-    console.log("Something Wrong from User")
+      return;
+    //console.log("Something Wrong from User")
   }
   
   
