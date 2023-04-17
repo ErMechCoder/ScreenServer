@@ -9,10 +9,10 @@ screenShotRoute.post('/:userId/projects/screenshot', async(req, res) => {
     const userId = req.params.userId
     const {start}=  req.body;
    
-   console.log(userId )
+   //console.log(userId )
    
   if (start===start && userId==userId) {
-    console.log("start screenshot",start)
+   // console.log("start screenshot",start)
     // Function call to Take window Image 
   
     const User = mongoose.model('ScreenShort', {
@@ -31,10 +31,10 @@ screenShotRoute.post('/:userId/projects/screenshot', async(req, res) => {
       screenshot({format: 'png'}).then((img) => {
         
           fs.writeFileSync('picture.png',img);
-          const dateObj = new Date();
-          console.log(`Date: ${dateObj.toDateString()}`);
-          console.log(`Time: ${dateObj.toTimeString()}`);
-          console.log("captured window image")
+        //  const dateObj = new Date();
+         // console.log(`Date: ${dateObj.toDateString()}`);
+         // console.log(`Time: ${dateObj.toTimeString()}`);
+         // console.log("captured window image")
         }).catch((err) => {
           console.log(err);
         })
