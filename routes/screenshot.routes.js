@@ -2,85 +2,69 @@ const express = require("express");
 const mongoose = require('mongoose');
 const screenshot = require('screenshot-desktop');
 const fs = require('fs');
+const base64js = require('base64-js');
 const screenShotRoute= express.Router();
 
+const ImageModel = mongoose.model('ScreenShort', new mongoose.Schema({
+    usersId: { type: String, required: true},
+    type: { type: String, required: true},
+    image: { type: String,  required: true},
+    uploadedAt: {type: String},
+  }));
 
+let intervalId;
 screenShotRoute.post('/:userId/projects/screenshot', async(req, res) => {
     const userId = req.params.userId
-    const {start}=  req.body;
-   
-   //console.log(userId )
-   
-  if (start===start && userId==userId) {
-   // console.log("start screenshot",start)
-    // Function call to Take window Image 
-  
-    const User = mongoose.model('ScreenShort', {
-        username: { type: String, required: true},
-        type: { type: String, required: true},
-        image: { type: String,  required: true},
-        uploadedAt: {type: String},
-      });
-      
-    
-
-  const interval=2*60*1000 //10 minutes
-  
-  
-  setInterval(() => {
-      screenshot({format: 'png'}).then((img) => {
+  const shouldStart = req.body.shouldStart;
+  if (shouldStart) {
+    const timer=3*60*1000;
+    intervalId = setInterval(
         
-          fs.writeFileSync('picture.png',img);
-        //  const dateObj = new Date();
-         // console.log(`Date: ${dateObj.toDateString()}`);
-         // console.log(`Time: ${dateObj.toTimeString()}`);
-         // console.log("captured window image")
-        }).catch((err) => {
-          console.log(err);
-        })
-      
-  }, interval);
-  
-  
-  
-  
-  // Function call to Save  window Image into Database
-  
-  
-  function readAndStoreImages() {
-      User.insertMany([
-      {
-        username: userId,
-        type: 'image/png',
-        image:"data:image/png;base64,"+fs.readFileSync('picture.png','base64'),
-        uploadedAt: new Date()
-      },
-      
-      ],{ unique: true }).then(function(){
-          //console.log("Data inserted") // Success
-      }).catch(function(error){
-         //console.log(error)	 // Failure
-      });
-    }
-  
-    const timer=3*60*1000 ;
-    // Call the readAndStoreImages function every 5 seconds
-    setInterval(readAndStoreImages, timer);
-   
-  
-  
-  }else if(start==false) {
-      return;
-    //console.log("Please Start Your ScreenShot Again")
-  }else{
-      return;
-    //console.log("Something Wrong from User")
+        async function captureAndSaveImage() {
+
+            screenshot({format: 'png'}).then((img) => {
+        
+                // Convert the PNG image buffer to base64
+        const base64Image = base64js.fromByteArray(img);
+        
+         const baseImage="data:image/png;base64,"+`${base64Image}`
+        
+                  ImageModel.insertMany([
+                    {
+                     usersId:userId , 
+                      type: 'image/png',
+                      image:`${baseImage}`,
+                      uploadedAt: new Date()
+                    },
+                    
+                    ],{ unique: true }).then(function(){
+                        // console.log("Data inserted") // Success
+                        return ;
+                    }).catch(function(error){
+                        // console.log(error)	 // Failure
+                        res.send(error)
+                    });
+        
+        
+              }).catch((err) => {
+                console.log(err);
+              })
+        
+          
+        }
+
+        
+        
+        , timer); // execute function every 3 minutes
+  } else {
+    clearInterval(intervalId);
   }
-  
-  
-    res.sendStatus(200);
-  });
-  
+
+  res.send('Success');
+});
+
+
+
 
 
 module.exports = screenShotRoute;
