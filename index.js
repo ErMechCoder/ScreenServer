@@ -20,12 +20,12 @@ connection();
 
 
 
-const User = mongoose.model('ScreenShort', {
-   usersId: { type: String, required: true},
-    type: { type: String, required: true},
-    image: { type: String,  required: true},
-    uploadedAt: {type: String},
-});
+// const User = mongoose.model('ScreenShort', {
+//    usersId: { type: String, required: true},
+//     type: { type: String, required: true},
+//     image: { type: String,  required: true},
+//     uploadedAt: {type: String},
+// });
 
 // // Function call to Take window Image 
 
@@ -92,10 +92,10 @@ app.use("/api/user", engineerprofileRouter);
 app.use("/api/user",screenshotRoute)
 // app.use("/api",userscreenRouter)
 
-app.get("/api/screen/get", async (req, res) => {
-  const tasks = await   User.find()
-  res.send(tasks)
-})
+// app.get("/api/screen/get", async (req, res) => {
+//   const tasks = await   User.find()
+//   res.send(tasks)
+// })
 
 
 
